@@ -1,0 +1,21 @@
+name: RDP-Windows-Free
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - name: Set password
+      run: |
+        net user runneradmin P@ssw0rd123
+
+    - name: Install Cloudflared
+      run: |
+        Invoke-WebRequest https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-windows-amd64.exe -OutFile cloudflared.exe
+
+    - name: Start RDP and Cloudflared tunnel
+      run: |
+        ./cloudflared.exe tunnel --url RDP://localhost:3389 --no-autoupdate
+      timeout-minutes: 300
